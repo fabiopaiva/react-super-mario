@@ -1,10 +1,10 @@
 export default {
-  backWidth: '512px', 
-  backHeight: '432px', 
-  bushesWidth: '508px;', 
-  bushesHeight: '79px', 
-  groundWidth: '68px', 
-  groundHeight: '24px', 
-  marioWidth: '48px', 
-  marioHeight: '54px'
+  backWidth: 512, 
+  backHeight: 432, 
+  bushesWidth: 508, 
+  bushesHeight: 79, 
+  groundWidth: 68, 
+  groundHeight: 24, 
+  marioWidth: 48, 
+  marioHeight: 54
 } 
