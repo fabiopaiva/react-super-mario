@@ -4,6 +4,8 @@ import Background from './components/Background';
 import Mario from './components/Player';
 import allowedKeys from './util/allowedKeys';
 import variables from './util/variables';
+import introMusic from './assets/musics/mpi.wav';
+import music from './assets/musics/mp.wav';
 import './ReactSuperMario.css';
 
 type Props = {}
@@ -39,11 +41,13 @@ export default class ReactSuperMario extends React.Component<Props, State> {
 
   _gameCoreRunTimeout: IntervalID;
   _activeKeys: typeof allowedKeys = allowedKeys;
+  _gameContainerRef: ?HTMLDivElement;
+  _audioRef: ?HTMLAudioElement;
 
   gameCoreRun = () => {
-    const step = 7.5;
     const { direction, position, width, scenarioPosition } = this.state;
     const { _activeKeys } = this;
+    const step = _activeKeys.a || _activeKeys.s ?  20 : 10;
     if (_activeKeys.ArrowRight ? !_activeKeys.ArrowLeft : _activeKeys.ArrowLeft) {
       this.setState({ isMoving: true })
       if (direction === 'ltr' && _activeKeys.ArrowLeft) {
@@ -65,11 +69,23 @@ export default class ReactSuperMario extends React.Component<Props, State> {
     }
   }
 
-  _gameContainerRef: ?HTMLDivElement
   getRef = (ref: ?HTMLDivElement) => {
     if (ref) {
       this._gameContainerRef = ref;
       this.setState({ width: ref.clientWidth })
+    }
+  }
+
+  getAudioRef = (ref: ?HTMLAudioElement) => {
+    if (ref) {
+      this._audioRef = ref;
+      ref.play();
+      ref.onended = () => {
+        ref.src = music;
+        ref.loop = true;
+        ref.play();
+        ref.onended = () => {};
+      }
     }
   }
 
@@ -98,6 +114,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
       <div className="ReactSuperMario" ref={this.getRef}>
         <Background position={scenarioPosition} />
         <Mario position={position} direction={direction} isMoving={isMoving} />
+        <audio src={introMusic} ref={this.getAudioRef} />
       </div>
     )
   }
