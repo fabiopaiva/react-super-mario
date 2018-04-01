@@ -9,9 +9,11 @@ import './ReactSuperMario.css';
 type Props = {}
 
 type State = {
+  // @TODO remove activeKeys from state to avoid rerender
   activeKeys: typeof allowedKeys,
   width?: number,
   position: number,
+  scenarioPosition: number,
   direction: 'ltr' | 'rtl',
   isMoving: boolean,
 }
@@ -20,6 +22,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   state = {
     activeKeys: allowedKeys,
     position: 0,
+    scenarioPosition: 0,
     direction: 'ltr',
     isMoving: false,
     width: 0,
@@ -28,19 +31,19 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   componentDidMount() {
     window.addEventListener('keydown', this.keyDown)
     window.addEventListener('keyup', this.keyUp)
-    this._checkPlayerStatusTimeout = setInterval(this.checkPlayerStatus, 150)
+    this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 100)
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.keyDown)
     window.removeEventListener('keyup', this.keyUp)
-    clearInterval(this._checkPlayerStatusTimeout)
+    clearInterval(this._gameCoreRunTimeout)
   }
 
-  _checkPlayerStatusTimeout: IntervalID
+  _gameCoreRunTimeout: IntervalID
 
-  checkPlayerStatus = () => {
-    const { activeKeys, direction, position, width } = this.state
+  gameCoreRun = () => {
+    const { activeKeys, direction, position, width, scenarioPosition } = this.state
     if (activeKeys.ArrowRight ? !activeKeys.ArrowLeft : activeKeys.ArrowLeft) {
       this.setState({ isMoving: true })
       if (direction === 'ltr' && activeKeys.ArrowLeft) {
@@ -48,10 +51,13 @@ export default class ReactSuperMario extends React.Component<Props, State> {
       } else if (direction === 'rtl' && activeKeys.ArrowRight) {
         this.setState({ direction: 'ltr' })
       }
-      if (activeKeys.ArrowRight && width && position < (width - variables.marioWidth - 20)) {
-        this.setState({ position: position + 20 })
+      if (activeKeys.ArrowRight && width && position > (width * 40 / 100)) {
+        this.setState({ scenarioPosition: scenarioPosition + 15 })
+      }
+      else if (activeKeys.ArrowRight && width && position < (width - variables.marioWidth - 15)) {
+        this.setState({ position: position + 15 })
       } else if (activeKeys.ArrowLeft && position > 0) {
-        this.setState({ position: position - 20 })
+        this.setState({ position: position - 15 })
       }
     } else {
       this.setState({ isMoving: false })
@@ -91,10 +97,15 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   }
 
   render() {
-    const { activeKeys, position, direction, isMoving } = this.state
+    const { 
+      position, 
+      direction, 
+      isMoving,
+      scenarioPosition,
+    } = this.state
     return (
       <div className="ReactSuperMario" ref={this.getRef}>
-        <Background activeKeys={activeKeys} />
+        <Background position={scenarioPosition} />
         <Mario position={position} direction={direction} isMoving={isMoving} />
       </div>
     )
