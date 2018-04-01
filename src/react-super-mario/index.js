@@ -9,8 +9,6 @@ import './ReactSuperMario.css';
 type Props = {}
 
 type State = {
-  // @TODO remove activeKeys from state to avoid rerender
-  activeKeys: typeof allowedKeys,
   width?: number,
   position: number,
   scenarioPosition: number,
@@ -20,7 +18,6 @@ type State = {
 
 export default class ReactSuperMario extends React.Component<Props, State> {
   state = {
-    activeKeys: allowedKeys,
     position: 0,
     scenarioPosition: 0,
     direction: 'ltr',
@@ -31,7 +28,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   componentDidMount() {
     window.addEventListener('keydown', this.keyDown)
     window.addEventListener('keyup', this.keyUp)
-    this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 100)
+    this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 50)
   }
 
   componentWillUnmount() {
@@ -40,24 +37,28 @@ export default class ReactSuperMario extends React.Component<Props, State> {
     clearInterval(this._gameCoreRunTimeout)
   }
 
-  _gameCoreRunTimeout: IntervalID
+  _gameCoreRunTimeout: IntervalID;
+  _activeKeys: typeof allowedKeys = allowedKeys;
 
   gameCoreRun = () => {
-    const { activeKeys, direction, position, width, scenarioPosition } = this.state
-    if (activeKeys.ArrowRight ? !activeKeys.ArrowLeft : activeKeys.ArrowLeft) {
+    const step = 7.5;
+    const { direction, position, width, scenarioPosition } = this.state;
+    const { _activeKeys } = this;
+    if (_activeKeys.ArrowRight ? !_activeKeys.ArrowLeft : _activeKeys.ArrowLeft) {
       this.setState({ isMoving: true })
-      if (direction === 'ltr' && activeKeys.ArrowLeft) {
+      if (direction === 'ltr' && _activeKeys.ArrowLeft) {
         this.setState({ direction: 'rtl' })
-      } else if (direction === 'rtl' && activeKeys.ArrowRight) {
+      } else if (direction === 'rtl' && _activeKeys.ArrowRight) {
         this.setState({ direction: 'ltr' })
       }
-      if (activeKeys.ArrowRight && width && position > (width * 40 / 100)) {
-        this.setState({ scenarioPosition: scenarioPosition + 15 })
-      }
-      else if (activeKeys.ArrowRight && width && position < (width - variables.marioWidth - 15)) {
-        this.setState({ position: position + 15 })
-      } else if (activeKeys.ArrowLeft && position > 0) {
-        this.setState({ position: position - 15 })
+      if (_activeKeys.ArrowRight && width && position > (width * 40 / 100)) {
+        this.setState({ scenarioPosition: scenarioPosition + step })
+      } else if (_activeKeys.ArrowLeft && position <= step && scenarioPosition > 0) {
+        this.setState({ scenarioPosition: scenarioPosition - step })
+      } else if (_activeKeys.ArrowRight && width && position < (width - variables.marioWidth - step)) {
+        this.setState({ position: position + step })
+      } else if (_activeKeys.ArrowLeft && position > 0) {
+        this.setState({ position: position - step })
       }
     } else {
       this.setState({ isMoving: false })
@@ -73,26 +74,16 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   }
 
   keyDown = (event: KeyboardEvent) => {
-    const { activeKeys } = this.state
-    if (activeKeys[event.key] === false ) {
-      this.setState({ 
-        activeKeys: {
-          ...this.state.activeKeys,
-          [event.key]: true,
-        } 
-      })
+    const { _activeKeys } = this;
+    if (_activeKeys[event.key] === false ) {
+      _activeKeys[event.key] = true;
     }
   }
 
   keyUp = (event: KeyboardEvent) => {
-    const { activeKeys } = this.state
-    if (activeKeys[event.key] === true ) {
-      this.setState({ 
-        activeKeys: {
-          ...this.state.activeKeys,
-          [event.key]: false,
-        } 
-      })
+    const { _activeKeys } = this;
+    if (_activeKeys[event.key] === true ) {
+      _activeKeys[event.key] = false;
     }
   }
 

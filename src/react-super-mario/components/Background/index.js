@@ -15,8 +15,8 @@ export default class Background extends React.PureComponent<Props> {
         className="Background" 
         style={{
           backgroundPosition: `
-            left ${-((position * (variables.groundWidth / 50)))}px bottom 0px,
-            left ${-((position * (variables.bushesWidth / 500)))}px bottom ${variables.groundHeight}px,
+            left ${-((position * (variables.groundWidth / 80)))}px bottom 0px,
+            left ${-((position * (variables.bushesWidth / 700)))}px bottom ${variables.groundHeight}px,
             left ${-((position * (variables.backWidth / 1000)))}px bottom 0px
           `
         }}
