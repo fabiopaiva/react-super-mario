@@ -1,0 +1,12 @@
+$backWidth: 512px; $backHeight: 432px;
+$bushesWidth: 508px; $bushesHeight: 79px;
+$groundWidth: 68px; $groundHeight: 24px;
+$marioWidth: 48px; $marioHeight: 54px;
+
+.absoluteFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

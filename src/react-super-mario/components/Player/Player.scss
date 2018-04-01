@@ -1,0 +1,15 @@
+@import '../../variables.scss';
+
+.ReactSuperMario {
+  .Player {
+    position: absolute;
+    width: $marioWidth;
+    height: $marioHeight;
+    z-index: 2;
+    left: 0;
+    bottom: $groundHeight;
+    background-image: url('../../assets/players/mario.gif');
+    background-repeat: no-repeat;
+    transition: left 200ms;
+  }
+}

@@ -1,19 +1,62 @@
 // @flow
-import React from 'react'
+import React from 'react';
+import Background from './components/Background';
+import Mario from './components/Player';
+import allowedKeys from './util/allowedKeys';
+import './ReactSuperMario.css';
 
-const aspect = 1.3333333333
+type Props = {}
 
-type Props = {
-    width: number
+type State = {
+  activeKeys: typeof allowedKeys
 }
 
-export default class ReactSuperMario extends React.PureComponent<Props> {
-    render() {
-        const { width } = this.props
-        return (
-            <svg width={width} height={width / aspect}>
-                <rect width="100%" height="100%" fill="red"/>
-            </svg>
-        )
+export default class ReactSuperMario extends React.Component<Props, State> {
+  state = {
+    activeKeys: allowedKeys
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.keyDown)
+    window.addEventListener('keyup', this.keyUp)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.keyDown)
+    window.removeEventListener('keyup', this.keyUp)
+  }
+
+  keyDown = (event: KeyboardEvent) => {
+    const { activeKeys } = this.state
+    if (activeKeys[event.key] === false ) {
+      this.setState({ 
+        activeKeys: {
+          ...this.state.activeKeys,
+          [event.key]: true,
+        } 
+      })
     }
+  }
+
+  keyUp = (event: KeyboardEvent) => {
+    const { activeKeys } = this.state
+    if (activeKeys[event.key] === true ) {
+      this.setState({ 
+        activeKeys: {
+          ...this.state.activeKeys,
+          [event.key]: false,
+        } 
+      })
+    }
+  }
+
+  render() {
+    const { activeKeys } = this.state
+    return (
+      <div className="ReactSuperMario">
+        <Background activeKeys={activeKeys} />
+        <Mario activeKeys={activeKeys} />
+      </div>
+    )
+  }
 }

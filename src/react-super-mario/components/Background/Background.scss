@@ -1,0 +1,21 @@
+@import '../../variables.scss';
+
+.ReactSuperMario {
+  .Background {
+    @extend .absoluteFill;
+    z-index: 1;
+    background-image:
+      url('../../assets/backgrounds/ground.png'),
+      url('../../assets/backgrounds/bushes.png'),
+      url('../../assets/backgrounds/back.png');
+    background-color: #F8E0B0;
+    background-repeat:
+      repeat-x,
+      repeat-x,
+      repeat-x;
+    background-position:
+      left 0px bottom 0px,
+      left 0px bottom $groundHeight,
+      left 0px bottom 0px;
+  }
+}
