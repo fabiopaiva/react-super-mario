@@ -3,6 +3,7 @@ import React from 'react'
 import toastr from 'toastr'
 import Background from './components/Background'
 import Mario from './components/Player'
+import Touchable from './components/Touchable'
 import ButtonInfo from './components/Buttons/info'
 import InfoBox from './components/Infobox'
 import allowedKeys from './util/allowedKeys'
@@ -94,21 +95,21 @@ export default class ReactSuperMario extends React.Component<Props, State> {
     // Jump
     if (_activeKeys.z && !isFalling) {
       if (!isJumping) {
-        this._audioSfxRef.src = jumpAudio;
-        this._audioSfxRef.play();
+        this._audioSfxRef.src = jumpAudio
+        this._audioSfxRef.play()
       }
-      this.setState({ isJumping: true });
+      this.setState({ isJumping: true })
       if (positionY < jumpLimit) {
-        this.setState({ positionY: positionY + 30 });
+        this.setState({ positionY: positionY + 30 })
       } else {
-        this.setState({ isFalling: true });
+        this.setState({ isFalling: true })
       }
     } else {
       if (positionY > 0) {
         const nextPositionY = positionY - (_activeKeys.z ? 30 : 40)
-        this.setState({ isFalling: true, positionY: nextPositionY >= 0 ? nextPositionY : 0 });
+        this.setState({ isFalling: true, positionY: nextPositionY >= 0 ? nextPositionY : 0 })
       } else {
-        this.setState({ isJumping: false, isFalling: _activeKeys.z });
+        this.setState({ isJumping: false, isFalling: _activeKeys.z })
       }
     }
   }
@@ -119,7 +120,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
       this._audioSfxRef.src = infoAudio
       this._audioSfxRef.play()
     }
-    this.setState({ displayInfo: true })
+    this.setState({ displayInfo: true, isFalling: true, positionY: 60 })
   }
 
   getRef = (ref: ?HTMLDivElement) => {
@@ -131,13 +132,13 @@ export default class ReactSuperMario extends React.Component<Props, State> {
 
   getAudioRef = (ref: ?HTMLAudioElement) => {
     if (ref) {
-      this._audioRef = ref;
-      ref.play();
+      this._audioRef = ref
+      ref.play()
       ref.onended = () => {
-        ref.src = music;
-        ref.loop = true;
-        ref.play();
-        ref.onended = () => {};
+        ref.src = music
+        ref.loop = true
+        ref.play()
+        ref.onended = () => {}
       }
     }
   }
@@ -188,15 +189,17 @@ export default class ReactSuperMario extends React.Component<Props, State> {
         />
         <audio src={introMusic} ref={this.getAudioRef} />
         <audio ref={this.getSfxAudioRef} />
-        <ButtonInfo 
+        <Touchable
+          onTouch={this.handleGameInfo}
+          active={displayInfo}
           scenarioPosition={scenarioPosition} 
           positionX={200} 
           positionY={150}
           playerPositionX={positionX}
           playerPositionY={positionY}
-          onTouch={this.handleGameInfo}
-          active={displayInfo}
-        />
+        >
+          <ButtonInfo />
+        </Touchable>
         {displayInfo && (
           <InfoBox>
             <h2>React JS Super Mario</h2>
