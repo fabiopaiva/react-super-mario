@@ -9,6 +9,6 @@
     left: 0;
     bottom: $groundHeight;
     background-repeat: no-repeat;
-    transition: left 100ms;
+    transition: left 400ms ease-out, bottom 100ms ease-out;
   }
 }
