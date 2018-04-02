@@ -26,6 +26,9 @@ type State = {
   isJumping: boolean,
   isFalling: boolean,
   displayInfo: boolean,
+  userIsTouching: boolean,
+  userTouchingX: number,
+  userTouchingY: number,
 }
 
 export default class ReactSuperMario extends React.Component<Props, State> {
@@ -39,19 +42,28 @@ export default class ReactSuperMario extends React.Component<Props, State> {
     isJumping: false,
     isFalling: false,
     displayInfo: false,
+    userIsTouching: false,
+    userTouchingX: 0,
+    userTouchingY: 0,
   }
 
   componentDidMount() {
-    window.addEventListener('keydown', this.keyDown);
-    window.addEventListener('keyup', this.keyUp);
-    this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 80);
-    toastr.success('Move with arrow LEFT/RIGHT <br/>Run with A or S <br/>Jump with Z', 'Instructions', { timeOut: 5000 });
+    window.addEventListener('keydown', this.keyDown)
+    window.addEventListener('keyup', this.keyUp)
+    window.addEventListener('touchstart', this.handleTouchStart)  
+    window.addEventListener('touchmove', this.handleTouchMove)
+    window.addEventListener('touchend', this.handleTouchEnd)
+    this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 80)
+    toastr.success('Move with arrow LEFT/RIGHT <br/>Run with A or S <br/>Jump with Z', 'Instructions', { timeOut: 5000 })
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.keyDown);
-    window.removeEventListener('keyup', this.keyUp);
-    clearInterval(this._gameCoreRunTimeout);
+    window.removeEventListener('keydown', this.keyDown)
+    window.removeEventListener('keyup', this.keyUp)
+    window.removeEventListener('touchstart', this.handleTouchStart)  
+    window.removeEventListener('touchmove', this.handleTouchMove)
+    window.removeventListener('touchend', this.handleTouchEnd)
+    clearInterval(this._gameCoreRunTimeout)
   }
 
   _gameCoreRunTimeout: IntervalID;
@@ -111,6 +123,51 @@ export default class ReactSuperMario extends React.Component<Props, State> {
       } else {
         this.setState({ isJumping: false, isFalling: _activeKeys.z })
       }
+    }
+  }
+
+  handleTouchStart = (event: TouchEvent) => {
+    this.setState({ 
+      userIsTouching: true, 
+      userTouchingX: event.touches[0].clientX, 
+      userTouchingY: event.touches[0].clientY,
+    })
+  }
+
+  handleTouchEnd = () => {
+    this.setState({ 
+      userIsTouching: false, 
+      userTouchingX: 0, 
+      userTouchingY: 0,
+    })
+    this._activeKeys.ArrowRight = false
+    this._activeKeys.ArrowLeft = false
+    this._activeKeys.a = false
+    this._activeKeys.z = false
+  }
+
+  handleTouchMove = (event: TouchEvent) => {
+    const { userTouchingX, userTouchingY } = this.state
+    const diffX = event.touches[0].clientX - userTouchingX
+    const diffY = userTouchingY - event.touches[0].clientY 
+
+    if (Math.abs(diffX) > 100) {
+      this._activeKeys.a = true
+    } else {
+      this._activeKeys.a = false
+    }
+    if (diffX > 20) {
+      this._activeKeys.ArrowRight = true
+      this._activeKeys.ArrowLeft = false
+    } else if (diffX < -20) {
+      this._activeKeys.ArrowLeft = true
+      this._activeKeys.ArrowRight = false
+    }
+
+    if (diffY > 40) {
+      this._activeKeys.z = true
+    } else {
+      this._activeKeys.z = false
     }
   }
 
