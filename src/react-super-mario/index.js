@@ -1,14 +1,17 @@
 // @flow
-import React from 'react';
-import toastr from 'toastr';
-import Background from './components/Background';
-import Mario from './components/Player';
-import allowedKeys from './util/allowedKeys';
-import variables from './util/variables';
-import introMusic from './assets/audio/mpi.wav';
-import music from './assets/audio/mp.wav';
-import jumpAudio from './assets/audio/smw_jump.wav';
-import './ReactSuperMario.css';
+import React from 'react'
+import toastr from 'toastr'
+import Background from './components/Background'
+import Mario from './components/Player'
+import ButtonInfo from './components/Buttons/info'
+import InfoBox from './components/Infobox'
+import allowedKeys from './util/allowedKeys'
+import variables from './util/variables'
+import introMusic from './assets/audio/mpi.wav'
+import music from './assets/audio/mp.wav'
+import jumpAudio from './assets/audio/smw_jump.wav'
+import infoAudio from './assets/audio/smw_message_block.wav'
+import './ReactSuperMario.css'
 
 type Props = {}
 
@@ -21,6 +24,7 @@ type State = {
   isMoving: boolean,
   isJumping: boolean,
   isFalling: boolean,
+  displayInfo: boolean,
 }
 
 export default class ReactSuperMario extends React.Component<Props, State> {
@@ -33,6 +37,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
     isMoving: false,
     isJumping: false,
     isFalling: false,
+    displayInfo: false,
   }
 
   componentDidMount() {
@@ -53,6 +58,11 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   _gameContainerRef: ?HTMLDivElement;
   _audioRef: ?HTMLAudioElement;
   _audioSfxRef: ?HTMLAudioElement;
+
+  restart() {
+    clearInterval(this._gameCoreRunTimeout)
+    this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 80)
+  }
 
   gameCoreRun = () => {
     const { direction, positionX, positionY, width, scenarioPosition, isJumping, isFalling } = this.state;
@@ -103,6 +113,15 @@ export default class ReactSuperMario extends React.Component<Props, State> {
     }
   }
 
+  handleGameInfo = () => {
+    clearInterval(this._gameCoreRunTimeout)
+    if (this._audioSfxRef) {
+      this._audioSfxRef.src = infoAudio
+      this._audioSfxRef.play()
+    }
+    this.setState({ displayInfo: true })
+  }
+
   getRef = (ref: ?HTMLDivElement) => {
     if (ref) {
       this._gameContainerRef = ref;
@@ -130,9 +149,13 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   }
 
   keyDown = (event: KeyboardEvent) => {
-    const { _activeKeys } = this;
+    const { _activeKeys, state: { displayInfo } } = this
     if (_activeKeys[event.key] === false ) {
-      _activeKeys[event.key] = true;
+      _activeKeys[event.key] = true
+      if (displayInfo) {
+        this.setState({ displayInfo: false })
+        this.restart()
+      }
     }
   }
 
@@ -151,12 +174,13 @@ export default class ReactSuperMario extends React.Component<Props, State> {
       isMoving,
       isJumping,
       scenarioPosition,
+      displayInfo,
     } = this.state
     return (
       <div className="ReactSuperMario" ref={this.getRef}>
         <Background position={scenarioPosition} />
-        <Mario 
-          positionX={positionX} 
+        <Mario
+          positionX={positionX}
           positionY={positionY} 
           direction={direction} 
           isMoving={isMoving} 
@@ -164,6 +188,47 @@ export default class ReactSuperMario extends React.Component<Props, State> {
         />
         <audio src={introMusic} ref={this.getAudioRef} />
         <audio ref={this.getSfxAudioRef} />
+        <ButtonInfo 
+          scenarioPosition={scenarioPosition} 
+          positionX={200} 
+          positionY={150}
+          playerPositionX={positionX}
+          playerPositionY={positionY}
+          onTouch={this.handleGameInfo}
+          active={displayInfo}
+        />
+        {displayInfo && (
+          <InfoBox>
+            <h2>React JS Super Mario</h2>
+            <p>
+              This project is a demonstration we can do amazing stuffs with 
+              {' '}
+              <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">React</a>
+            </p>
+            <p>
+              Check also the source code
+              {' '}
+              <a href="https://github.com/fabiopaiva/react-super-mario" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-github fa-2x" />
+              </a>
+            </p>
+            <br />
+            <h2>Follow me:</h2>
+            <p>
+              <a href="https://github.com/fabiopaiva" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-github fa-2x" />
+              </a>
+              {' '}
+              <a href="https://twitter.com/fabaopaiva" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-twitter fa-2x" />
+              </a>
+              {' '}
+              <a href="https://www.facebook.com/paiva.fabiofelipe" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-facebook fa-2x" />
+              </a>
+            </p>
+          </InfoBox>
+        )}
       </div>
     )
   }

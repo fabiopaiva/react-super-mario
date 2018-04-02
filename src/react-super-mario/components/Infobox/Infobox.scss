@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono');
+
+.ReactSuperMario { 
+  .Infobox {
+    font-family: 'Ubuntu Mono', monospace;
+    position: absolute;
+    top: 25%;
+    left: 33%;
+    z-index: 3;
+    width: 100%;
+    max-width: 500px;
+    height: 300px;
+    background: #000;
+    color: #FFF;
+    padding: 20px;
+    margin: -20px;
+    transition: max-width 500ms, height 500ms, opacity 500ms;
+    opacity: 1;
+    overflow: hidden;
+    a {
+      color: #FFF;
+    }
+  }
+}

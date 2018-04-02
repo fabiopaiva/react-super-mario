@@ -1,0 +1,18 @@
+.absoluteFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }
+
+.ReactSuperMario .Button {
+  transition: left 150ms ease-out; }
+
+.ReactSuperMario .ButtonInfo {
+  background: url("../../assets/tiles/objects-and-blocks.png");
+  background-position: -164px 334px;
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  z-index: 2;
+  bottom: 144px; }
