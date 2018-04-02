@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import toastr from 'toastr';
 import Background from './components/Background';
 import Mario from './components/Player';
 import allowedKeys from './util/allowedKeys';
@@ -35,15 +36,16 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    window.addEventListener('keydown', this.keyDown)
-    window.addEventListener('keyup', this.keyUp)
-    this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 80)
+    window.addEventListener('keydown', this.keyDown);
+    window.addEventListener('keyup', this.keyUp);
+    this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 80);
+    toastr.success('Move with arrow LEFT/RIGHT <br/>Run with A or S <br/>Jump with Z', 'Instructions', { timeOut: 5000 });
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.keyDown)
-    window.removeEventListener('keyup', this.keyUp)
-    clearInterval(this._gameCoreRunTimeout)
+    window.removeEventListener('keydown', this.keyDown);
+    window.removeEventListener('keyup', this.keyUp);
+    clearInterval(this._gameCoreRunTimeout);
   }
 
   _gameCoreRunTimeout: IntervalID;
