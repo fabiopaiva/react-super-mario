@@ -50,7 +50,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   componentDidMount() {
     window.addEventListener('keydown', this.keyDown)
     window.addEventListener('keyup', this.keyUp)
-    window.addEventListener('touchstart', this.handleTouchStart)  
+    window.addEventListener('touchstart', this.handleTouchStart)
     window.addEventListener('touchmove', this.handleTouchMove)
     window.addEventListener('touchend', this.handleTouchEnd)
     this._gameCoreRunTimeout = setInterval(this.gameCoreRun, 80)
@@ -60,7 +60,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   componentWillUnmount() {
     window.removeEventListener('keydown', this.keyDown)
     window.removeEventListener('keyup', this.keyUp)
-    window.removeEventListener('touchstart', this.handleTouchStart)  
+    window.removeEventListener('touchstart', this.handleTouchStart)
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeventListener('touchend', this.handleTouchEnd)
     clearInterval(this._gameCoreRunTimeout)
@@ -127,17 +127,17 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   }
 
   handleTouchStart = (event: TouchEvent) => {
-    this.setState({ 
-      userIsTouching: true, 
-      userTouchingX: event.touches[0].clientX, 
+    this.setState({
+      userIsTouching: true,
+      userTouchingX: event.touches[0].clientX,
       userTouchingY: event.touches[0].clientY,
     })
   }
 
   handleTouchEnd = () => {
-    this.setState({ 
-      userIsTouching: false, 
-      userTouchingX: 0, 
+    this.setState({
+      userIsTouching: false,
+      userTouchingX: 0,
       userTouchingY: 0,
     })
     this._activeKeys.ArrowRight = false
@@ -149,7 +149,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   handleTouchMove = (event: TouchEvent) => {
     const { userTouchingX, userTouchingY } = this.state
     const diffX = event.touches[0].clientX - userTouchingX
-    const diffY = userTouchingY - event.touches[0].clientY 
+    const diffY = userTouchingY - event.touches[0].clientY
 
     if (Math.abs(diffX) > 100) {
       this._activeKeys.a = true
@@ -190,7 +190,35 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   getAudioRef = (ref: ?HTMLAudioElement) => {
     if (ref) {
       this._audioRef = ref
-      ref.play()
+      const tryRetry = () => new Promise((resolve, reject) => {
+        const playPromise = ref.play()
+        if (playPromise) {
+          playPromise
+            .then(() => {
+              deregister()
+              resolve()
+            })
+            .catch(reject)
+        } else {
+          deregister()
+          resolve()
+        }
+      })
+
+      const register = () => {
+        window.addEventListener('focus', tryRetry)
+        window.addEventListener('click', tryRetry)
+        window.addEventListener('keypress', tryRetry)
+        window.addEventListener('load', tryRetry)
+      }
+      const deregister = () => {
+        window.removeEventListener('focus', tryRetry)
+        window.removeEventListener('click', tryRetry)
+        window.removeEventListener('keypress', tryRetry)
+        window.removeEventListener('load', tryRetry)
+      }
+      tryRetry().catch(register)
+
       ref.onended = () => {
         ref.src = music
         ref.loop = true
@@ -225,10 +253,10 @@ export default class ReactSuperMario extends React.Component<Props, State> {
   }
 
   render() {
-    const { 
-      positionX, 
+    const {
+      positionX,
       positionY,
-      direction, 
+      direction,
       isMoving,
       isJumping,
       scenarioPosition,
@@ -239,18 +267,18 @@ export default class ReactSuperMario extends React.Component<Props, State> {
         <Background position={scenarioPosition} />
         <Mario
           positionX={positionX}
-          positionY={positionY} 
-          direction={direction} 
-          isMoving={isMoving} 
-          isJumping={isJumping} 
+          positionY={positionY}
+          direction={direction}
+          isMoving={isMoving}
+          isJumping={isJumping}
         />
         <audio src={introMusic} ref={this.getAudioRef} />
         <audio ref={this.getSfxAudioRef} />
         <Touchable
           onTouch={this.handleGameInfo}
           active={displayInfo}
-          scenarioPosition={scenarioPosition} 
-          positionX={200} 
+          scenarioPosition={scenarioPosition}
+          positionX={200}
           positionY={150}
           playerPositionX={positionX}
           playerPositionY={positionY}
@@ -261,7 +289,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
           <InfoBox>
             <h2>React JS Super Mario</h2>
             <p>
-              This project is a demonstration we can do amazing stuffs with 
+              This project is a demonstration we can do amazing stuffs with
               {' '}
               <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">React</a>
             </p>
