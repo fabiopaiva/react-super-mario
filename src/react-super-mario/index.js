@@ -289,12 +289,7 @@ export default class ReactSuperMario extends React.Component<Props, State> {
           <InfoBox>
             <h2>React JS Super Mario</h2>
             <p>
-              This project is a demonstration we can do amazing stuffs with
-              {' '}
-              <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">React</a>
-            </p>
-            <p>
-              Check also the source code
+              Check the source code
               {' '}
               <a href="https://github.com/fabiopaiva/react-super-mario" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-github fa-2x" />
@@ -307,12 +302,8 @@ export default class ReactSuperMario extends React.Component<Props, State> {
                 <i className="fab fa-github fa-2x" />
               </a>
               {' '}
-              <a href="https://twitter.com/fabaopaiva" target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-twitter fa-2x" />
-              </a>
-              {' '}
-              <a href="https://www.facebook.com/paiva.fabiofelipe" target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-facebook fa-2x" />
+              <a href="https://www.linkedin.com/in/fabio-dev/" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-linkedin fa-2x" />
               </a>
             </p>
           </InfoBox>
