@@ -1,6 +1,6 @@
 # React Super Mario
 
-Visit: [https://fabiopaiva.github.io/react-super-mario/](https://fabiopaiva.github.io/react-super-mario/)
+Visit: [https://paiva.info](https://paiva.info)
 
 # Key Control
 
