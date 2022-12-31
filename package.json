@@ -9,7 +9,7 @@
     "npm-run-all": "^4.1.2",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
-    "react-scripts": "1.1.1",
+    "react-scripts": "5.0.1",
     "toastr": "^2.1.4"
   },
   "scripts": {
